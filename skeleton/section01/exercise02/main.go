@@ -34,16 +34,16 @@ func run(args []string) error {
 			continue
 		}
 
-		for _, stmt := range /* TODO: 関数のボディを取得しfor文で回る */ {
+		for _, stmt := range decl.Body.List {
 
-			// TODO: 代入文か確かめる
-
+			// 代入文か確かめる
+			assign, _ := stmt.(*ast.AssignStmt)
 			if assign == nil || len(assign.Rhs) != 1 {
 				continue
 			}
 
-			// TODO: 代入文の右辺の1つめが関数呼び出しか調べる
-
+			// 代入文の右辺の1つめが関数呼び出しか調べる
+			call, _ := assign.Rhs[0].(*ast.CallExpr)
 			if call == nil {
 				continue
 			}
@@ -58,7 +58,7 @@ func run(args []string) error {
 				continue
 			}
 
-			if /* TODO: パッケージ名がexecで関数名がCommandの関数を呼んでるか調べる*/ {
+			if pkgname.Name == "exec" && sel.Sel.Name == "Command" {
 				pos := fset.Position(assign.Rhs[0].Pos())
 				fmt.Fprintf(os.Stdout, "%s: find exec.Command in init\n", pos)
 			}
